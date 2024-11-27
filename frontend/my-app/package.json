@@ -29,7 +29,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "server": "live-server public --host=10.1.66.73 --port=3000 --middleware=./disable-browser-cache.js"
   },
   "eslintConfig": {
     "extends": [

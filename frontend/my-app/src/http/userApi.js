@@ -1,4 +1,4 @@
-import { $authHost, $host } from "./index";
+import { $host } from "./index";
 import { jwtDecode } from 'jwt-decode';
 
 export const registration = async (login, password, FIO, phone, email) => {
@@ -7,7 +7,7 @@ export const registration = async (login, password, FIO, phone, email) => {
     return jwtDecode(data.token)
 }
 
-export const login = async (login, password) => {
+export const auth = async (login, password) => {
     const { data } = await $host.post('auth/login', { login, password })
     localStorage.setItem('token', data.token)
     return jwtDecode(data.token)
@@ -15,7 +15,7 @@ export const login = async (login, password) => {
 
 export const getAll = async () => {
     try {
-        const { data } = await $authHost.get(`request/getAll`, {
+        const { data } = await $host.get(`request/getAll`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         })
         return data
@@ -27,7 +27,7 @@ export const getAll = async () => {
 
 export const getAllID = async () => {
     try {
-        const { data } = await $authHost.get(`request/getAllID`, {
+        const { data } = await $host.get(`request/getAllID`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         })
         return data
@@ -39,7 +39,7 @@ export const getAllID = async () => {
 
 export const updateAccess = async (id_request) => {
     try {
-        const { data } = await $authHost.get(`request/access`, {
+        const { data } = await $host.patch(`request/access`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
                 data: { id_request }
@@ -53,7 +53,7 @@ export const updateAccess = async (id_request) => {
 }
 export const updateDenied = async (id_request) => {
     try {
-        const { data } = await $authHost.get('request/denied', {
+        const { data } = await $host.patch('request/denied', {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
                 data: { id_request }
@@ -67,7 +67,7 @@ export const updateDenied = async (id_request) => {
 }
 export const insertRequest = async (car_number, description) => {
     try {
-        const { data } = await $authHost.get('request/insert', {
+        const { data } = await $host.post('request/insert', {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         }, { car_number, description })
         return data
