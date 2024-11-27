@@ -32,7 +32,7 @@ class Requests {
 
     async updateAccess(req, res, next) {
         try {
-            const {id_request} = req.params
+            const {id_request} = req.body
             const role = req.user.role
             if (role != "admin") {
                 return next(ApiError.badRequest("Недостаточно прав!"))
