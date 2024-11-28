@@ -1,6 +1,7 @@
 const ApiError = require('../ApiError')
 const { Request } = require('../models/model')
 const sequelize = require('../database')
+const { Sequelize } = require('../database')
 
 
 
@@ -23,7 +24,7 @@ class Requests {
         try {
             const id_user = req.user.id_user
             const users = await Request.findAll({ where: { id_user: id_user } })
-            return res.json(users)
+            return res.json({users})
         } catch (error) {
             console.log(error)
             return next(ApiError.badRequest("Что-то пошло не так"))
@@ -41,7 +42,7 @@ class Requests {
             if (candidate.status != "новое") {
                 return next(ApiError.badRequest("Можно изменять только новые заявки"))
             }
-            const access = await Request.update({ status: "подтверждено" }, { where: { id_request: id_request } })
+            const access = await Request.update({ status: "подтверждено" }, { where: { id_request: id_request, update: Sequelize.NOW } })
             return res.json(access)
         } catch (error) {
             console.log(error)
@@ -60,7 +61,7 @@ class Requests {
             if (candidate.status != "новое") {
                 return next(ApiError.badRequest("Можно изменять только новые заявки"))
             }
-            const denied = await Request.update({ status: "denied" }, { where: { id_request: id_request } })
+            const denied = await Request.update({ status: "denied" }, { where: { id_request: id_request, update: Sequelize.NOW } })
             return res.json(denied)
         } catch (error) {
             console.log(error)
@@ -71,8 +72,8 @@ class Requests {
     async insertRequest(req, res, next) {
         try {
             const id_user = req.user.id_user
-            const { car_number, description } = req.body
-            const request = await Request.create({ id_user: id_user, car_number: car_number, description: description })
+            const { data } = req.body
+            const request = await Request.create({ id_user: id_user, car_number: data.car_number, description: data.description })
             return res.json(request)
         } catch (error) {
             console.log(error)

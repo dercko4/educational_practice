@@ -1,10 +1,11 @@
 const sequelize = require('../database')
 const {DataTypes} = require('sequelize')
+const { Sequelize } = require('../database')
 
 const User = sequelize.define("users", {
     id_user: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     FIO: {type: DataTypes.STRING},
-    phone: {type: DataTypes.BIGINT},
+    phone: {type: DataTypes.STRING},
     email: {type: DataTypes.STRING},
     login: {type: DataTypes.STRING, unique: true},
     password: {type: DataTypes.STRING},
@@ -16,7 +17,9 @@ const Request = sequelize.define("requests", {
     id_user: {type: DataTypes.INTEGER, references: {model: User, key: "id_user"}},
     description: {type: DataTypes.STRING},
     car_number: {type: DataTypes.STRING},
-    status: {type: DataTypes.STRING, defaultValue: "новое"}
+    status: {type: DataTypes.STRING, defaultValue: "новое"},
+    date: {type: DataTypes.DATE, defaultValue: Sequelize.NOW},
+    update: {type: DataTypes.DATE}
 }, {timestamps: false})
 
 
