@@ -20,6 +20,7 @@
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-modal": "^3.16.1",
+    "react-phone-number-input": "^3.4.9",
     "react-router-dom": "^6.20.1",
     "react-scripts": "^5.0.1",
     "react-use-downloader": "^1.2.8",
@@ -29,8 +30,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "server": "live-server public --host=10.1.66.73 --port=3000 --middleware=./disable-browser-cache.js"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [

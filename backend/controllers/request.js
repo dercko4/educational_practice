@@ -1,7 +1,7 @@
 const ApiError = require('../ApiError')
 const { Request } = require('../models/model')
 const sequelize = require('../database')
-const { Sequelize } = require('../database')
+
 
 
 
@@ -13,7 +13,7 @@ class Requests {
                 return next(ApiError.badRequest("Недостаточно прав!"))
             }
             const requests = await Request.findAll()
-            return res.json(requests)
+            return res.json({ requests })
         } catch (error) {
             console.log(error)
             return next(ApiError.badRequest("Что-то пошло не так"))
@@ -24,7 +24,7 @@ class Requests {
         try {
             const id_user = req.user.id_user
             const users = await Request.findAll({ where: { id_user: id_user } })
-            return res.json({users})
+            return res.json({ users })
         } catch (error) {
             console.log(error)
             return next(ApiError.badRequest("Что-то пошло не так"))
@@ -33,16 +33,22 @@ class Requests {
 
     async updateAccess(req, res, next) {
         try {
-            const {id_request} = req.body
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+            today = yyyy + '/' + mm + '/' + dd;
+            const data = req.body
             const role = req.user.role
             if (role != "admin") {
                 return next(ApiError.badRequest("Недостаточно прав!"))
             }
-            const candidate = await Request.findOne({ where: { id_request: id_request } })
+            const candidate = await Request.findOne({ where: { id_request: data.id_request } })
             if (candidate.status != "новое") {
                 return next(ApiError.badRequest("Можно изменять только новые заявки"))
             }
-            const access = await Request.update({ status: "подтверждено" }, { where: { id_request: id_request, update: Sequelize.NOW } })
+            console.log(Seq)
+            const access = await Request.update({ status: "подтверждено", update: today}, { where: { id_request: data.headers.data.id_request, update: Sequelize.NOW } })
             return res.json(access)
         } catch (error) {
             console.log(error)
@@ -52,16 +58,21 @@ class Requests {
 
     async updateDenied(req, res, next) {
         try {
-            const {id_request} = req.params
+            const data = req.body
             const role = req.user.role
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+            today = yyyy + '/' + mm + '/' + dd;
             if (role != "admin") {
                 return next(ApiError.badRequest("Недостаточно прав!"))
             }
-            const candidate = await Request.findOne({ where: { id_request: id_request } })
+            const candidate = await Request.findOne({ where: { id_request: data.headers.data.id_request } })
             if (candidate.status != "новое") {
                 return next(ApiError.badRequest("Можно изменять только новые заявки"))
             }
-            const denied = await Request.update({ status: "denied" }, { where: { id_request: id_request, update: Sequelize.NOW } })
+            const denied = await Request.update({ status: "denied", update: today }, { where: { id_request: data.headers.data.id_request} })
             return res.json(denied)
         } catch (error) {
             console.log(error)

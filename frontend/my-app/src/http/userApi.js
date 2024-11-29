@@ -1,4 +1,4 @@
-import { $host } from "./index";
+import { $host, $authHost } from "./index";
 import { jwtDecode } from 'jwt-decode';
 
 export const registration = async (login, password, FIO, phone, email) => {
@@ -15,10 +15,10 @@ export const auth = async (login, password) => {
 
 export const getAll = async () => {
     try {
-        const { data } = await $host.get(`request/getAll`, {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        const { data } = await $authHost.get(`request/getAll`, {
+            headers: { authorization: `Bearer ${localStorage.getItem('token')}` }
         })
-        return data
+        return data.requests
 
     } catch (e) {
         alert(e.response.data.message)
@@ -27,10 +27,10 @@ export const getAll = async () => {
 
 export const getAllID = async () => {
     try {
-        const { data } = await $host.get(`request/getAllID`, {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        const { data } = await $authHost.get(`request/getAllID`, {
+            headers: { authorization: `Bearer ${localStorage.getItem('token')}` }
         })
-        return data
+        return data.users
 
     } catch (e) {
         alert(e.response.data.message)
@@ -39,13 +39,13 @@ export const getAllID = async () => {
 
 export const updateAccess = async (id_request) => {
     try {
-        const { data } = await $host.patch(`request/access`, {
+        const { data } = await $authHost.patch(`request/access`, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                authorization: `Bearer ${localStorage.getItem('token')}`,
                 data: { id_request }
             }
         })
-        return data.user_files
+        return data
 
     } catch (e) {
         alert(e.response.data.message)
@@ -53,9 +53,9 @@ export const updateAccess = async (id_request) => {
 }
 export const updateDenied = async (id_request) => {
     try {
-        const { data } = await $host.patch('request/denied', {
+        const { data } = await $authHost.patch('request/denied', {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                authorization: `Bearer ${localStorage.getItem('token')}`,
                 data: { id_request }
             }
         })
@@ -67,9 +67,11 @@ export const updateDenied = async (id_request) => {
 }
 export const insertRequest = async (car_number, description) => {
     try {
-        const { data } = await $host.post('request/insert', {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        }, { car_number, description })
+        const { data } = await $authHost.post('request/insert', {
+            headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
+            data: { car_number, description }
+        })
+
         return data
 
     } catch (e) {
